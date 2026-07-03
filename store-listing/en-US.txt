@@ -1,0 +1,19 @@
+Element Evidence lets you copy the element selected in Chrome DevTools as one automation-ready DOM and locator bundle.
+
+Use it when a blocker report, AI assistant, or browser automation task needs more than one selector. The bundle includes page context, selected element metadata, outerHTML, CSS selector, XPath, full XPath, JavaScript query path, optional computed styles, and nearby DOM summaries.
+
+Features:
+- Adds an Element Evidence sidebar to the DevTools Elements panel
+- Copies one JSON or Markdown payload with a single button
+- Uses the DevTools-selected node through $0
+- Includes redundant locator data for later automation work
+- Keeps all processing local in your browser
+- Uses no host permissions, background worker, analytics, storage, or network requests
+
+Limitations:
+- This extension works inside Chrome DevTools.
+- It cannot add an item to Chrome's built-in Elements Copy submenu.
+- Cross-frame and closed shadow-root behavior is controlled by Chrome DevTools.
+
+Open source under the GPL-3.0 license:
+https://github.com/molodchyk/element-evidence

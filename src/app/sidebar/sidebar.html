@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Element Evidence</title>
+    <link rel="stylesheet" href="./sidebar.css">
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="header">
+        <h1 class="title">Element Evidence</h1>
+        <p class="subtitle">Copy the selected DevTools element as one DOM and locator bundle.</p>
+      </header>
+
+      <section class="toolbar" aria-label="Bundle actions">
+        <button id="copyBundle" class="primary-button" type="button">Copy bundle</button>
+        <button id="refreshBundle" class="secondary-button" type="button">Refresh</button>
+      </section>
+
+      <section class="controls" aria-label="Bundle options">
+        <div class="control-line">
+          <label for="format">Format</label>
+          <select id="format">
+            <option value="json">JSON</option>
+            <option value="markdown">Markdown</option>
+          </select>
+        </div>
+
+        <div class="control-line">
+          <label for="styleMode">Styles</label>
+          <select id="styleMode">
+            <option value="all">All computed</option>
+            <option value="practical">Practical subset</option>
+          </select>
+        </div>
+
+        <div class="control-line checkbox-line">
+          <input id="includeStyles" type="checkbox" checked>
+          <label for="includeStyles">Include computed styles</label>
+        </div>
+      </section>
+
+      <section class="summary" aria-live="polite">
+        <p class="summary-heading">Selected element</p>
+        <p id="selectionSummary" class="summary-value">Select an element in DevTools.</p>
+      </section>
+
+      <div id="status" class="status" role="status">Ready.</div>
+      <pre id="preview" class="preview" aria-label="Bundle preview"></pre>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "element-evidence",
+  "version": "0.1.0",
+  "description": "Chrome DevTools extension for copying a selected element as one DOM and locator evidence bundle.",
+  "type": "module",
+  "private": false,
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "test": "node --test",
+    "verify:manifest": "node scripts/verify-manifest.mjs",
+    "verify:imports": "node scripts/verify-imports.mjs",
+    "verify": "npm run verify:manifest && npm run verify:imports && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/molodchyk/element-evidence.git"
+  },
+  "bugs": {
+    "url": "https://github.com/molodchyk/element-evidence/issues"
+  },
+  "homepage": "https://github.com/molodchyk/element-evidence"
+}
