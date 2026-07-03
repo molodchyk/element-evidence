@@ -51,4 +51,6 @@ Before publishing a release:
 
 Installed Google Chrome 149 on this machine ignored `--load-extension` and `--disable-extensions-except` during automated verification. This matches Chrome's current policy for branded builds: extension-loading command-line switches are restricted or removed in recent Chrome versions.
 
+The `chrome://extensions` UI was also probed from a temporary profile. The page exposes Chrome's internal `developerPrivate.loadDirectory` API, but that API requires a browser `DirectoryEntry` from the native directory picker. Playwright could not fill that picker as a directory chooser, and a hidden `webkitdirectory` input did not produce a usable directory entry on the internal page.
+
 Use manual **Load unpacked** for installed Chrome, or use a compatible Chrome for Testing/Chromium build for fully automated extension-load checks.
