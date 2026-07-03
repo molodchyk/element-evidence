@@ -21,3 +21,7 @@ The extension requests `clipboardWrite` only so the user-clicked **Copy bundle**
 The extension does not use a background service worker, host permissions, content scripts, remote code, analytics, storage, or network requests.
 
 All copied data is generated locally from the currently inspected page and remains on the user's clipboard.
+
+## Browser Notes
+
+Recent Google Chrome branded builds no longer accept command-line extension loading for automated tests. Use the browser UI's **Load unpacked** flow for manual review, or use a compatible Chrome for Testing/Chromium build when automation needs `--load-extension`.

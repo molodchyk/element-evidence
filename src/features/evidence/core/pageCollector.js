@@ -19,15 +19,26 @@ export function collectElementEvidence(options = {}) {
   }
 
   const element = selected;
-  const cssSelector = buildCssSelector(element);
+  const selectorPath = buildSelectorPath(element);
+  const cssSelector = selectorPath.cssSelector;
   const fullXPath = buildFullXPath(element);
   const xpath = buildXPath(element);
-  const jsPath = buildJsPath(element, cssSelector);
+  const jsPath = buildJsPath(selectorPath);
   const text = getElementText(element, normalizedOptions.maxTextLength);
   const html = truncateText(element.outerHTML || "", normalizedOptions.maxOuterHTMLLength);
   const computedStyles = normalizedOptions.includeComputedStyles
     ? getComputedStyles(element, normalizedOptions.styleMode)
     : null;
+  const aria = getAriaHints(element);
+  const automation = buildAutomationSummary(element, {
+    cssSelector,
+    xpath,
+    fullXPath,
+    jsPath,
+    selectorPath,
+    text,
+    aria
+  });
 
   return {
     ok: true,
@@ -53,7 +64,7 @@ export function collectElementEvidence(options = {}) {
         classes: Array.from(element.classList || []),
         attributes: getAttributes(element, normalizedOptions.maxAttributeValueLength),
         text,
-        aria: getAriaHints(element),
+        aria,
         rect: serializeRect(element.getBoundingClientRect()),
         html
       },
@@ -61,8 +72,10 @@ export function collectElementEvidence(options = {}) {
         cssSelector,
         xpath,
         fullXPath,
-        jsPath
+        jsPath,
+        selectorPath
       },
+      automation,
       styles: computedStyles,
       context: {
         parent: summarizeElement(element.parentElement, normalizedOptions.maxTextLength),
@@ -218,10 +231,45 @@ export function collectElementEvidence(options = {}) {
     ];
   }
 
-  function buildCssSelector(target) {
+  function buildSelectorPath(target) {
+    const segments = [];
+    let current = target;
+
+    while (current && current.nodeType === Node.ELEMENT_NODE) {
+      const root = current.getRootNode?.() || document;
+      segments.push({
+        rootType: root === document ? "document" : "shadow-root",
+        selector: buildCssSelector(current, root),
+        hostTagName: root.host?.tagName || "",
+        hostId: root.host?.id || ""
+      });
+
+      if (root === document || !root.host) {
+        break;
+      }
+
+      current = root.host;
+    }
+
+    const selectedRootSelector = segments[0]?.selector || "";
+    const orderedSegments = segments.slice().reverse();
+
+    return {
+      cssSelector: selectedRootSelector,
+      rootType: target.getRootNode?.() === document ? "document" : "shadow-root",
+      shadowDepth: Math.max(0, orderedSegments.length - 1),
+      segments: orderedSegments,
+      reachesSelectedNode:
+        orderedSegments.length === 1
+          ? "document.querySelector"
+          : "document.querySelector + open shadowRoot traversal"
+    };
+  }
+
+  function buildCssSelector(target, root = target.getRootNode?.() || document) {
     if (target.id) {
       const idSelector = `#${escapeCssIdentifier(target.id)}`;
-      if (isUniqueInDocument(idSelector)) {
+      if (isUniqueInRoot(idSelector, root)) {
         return idSelector;
       }
     }
@@ -230,13 +278,13 @@ export function collectElementEvidence(options = {}) {
     let current = target;
 
     while (current && current.nodeType === Node.ELEMENT_NODE) {
-      parts.unshift(buildSelectorPart(current));
+      parts.unshift(buildSelectorPart(current, root));
       const selector = parts.join(" > ");
-      if (isUniqueInDocument(selector)) {
+      if (isUniqueInRoot(selector, root)) {
         return selector;
       }
 
-      if (current === document.documentElement) {
+      if (current === document.documentElement || current.parentNode === root) {
         break;
       }
 
@@ -246,7 +294,7 @@ export function collectElementEvidence(options = {}) {
     return parts.join(" > ");
   }
 
-  function buildSelectorPart(target) {
+  function buildSelectorPart(target, root) {
     const tagName = target.localName || target.tagName.toLowerCase();
 
     if (target.id) {
@@ -260,22 +308,22 @@ export function collectElementEvidence(options = {}) {
       .join("");
     const candidate = `${tagName}${classNames}`;
 
-    if (isUniqueAmongSiblings(target, candidate)) {
+    if (isUniqueAmongSiblings(target, candidate, root)) {
       return candidate;
     }
 
     return `${candidate}:nth-of-type(${getElementIndex(target)})`;
   }
 
-  function isUniqueInDocument(selector) {
+  function isUniqueInRoot(selector, root) {
     try {
-      return document.querySelectorAll(selector).length === 1;
+      return root.querySelectorAll(selector).length === 1;
     } catch {
       return false;
     }
   }
 
-  function isUniqueAmongSiblings(target, selectorPart) {
+  function isUniqueAmongSiblings(target, selectorPart, root) {
     const parent = target.parentElement;
     if (!parent) {
       return true;
@@ -300,6 +348,11 @@ export function collectElementEvidence(options = {}) {
   }
 
   function buildXPath(target) {
+    const root = target.getRootNode?.();
+    if (root && root !== document) {
+      return "";
+    }
+
     if (target.id) {
       return `//*[@id=${quoteXPathString(target.id)}]`;
     }
@@ -308,6 +361,11 @@ export function collectElementEvidence(options = {}) {
   }
 
   function buildFullXPath(target) {
+    const root = target.getRootNode?.();
+    if (root && root !== document) {
+      return "";
+    }
+
     const segments = [];
     let current = target;
 
@@ -348,13 +406,179 @@ export function collectElementEvidence(options = {}) {
     return `concat('${stringValue.replaceAll("'", "', \"'\", '")}')`;
   }
 
-  function buildJsPath(target, cssSelector) {
-    const root = target.getRootNode?.();
-    if (root && root !== document) {
-      return `document.querySelector(${JSON.stringify(cssSelector)})`;
+  function buildJsPath(selectorPath) {
+    if (!selectorPath.segments.length) {
+      return "";
     }
 
-    return `document.querySelector(${JSON.stringify(cssSelector)})`;
+    const [firstSegment, ...rest] = selectorPath.segments;
+    let path = `document.querySelector(${JSON.stringify(firstSegment.selector)})`;
+
+    for (const segment of rest) {
+      path += `.shadowRoot.querySelector(${JSON.stringify(segment.selector)})`;
+    }
+
+    return path;
+  }
+
+  function buildAutomationSummary(target, locatorContext) {
+    const preferred = choosePreferredLocator(target, locatorContext);
+    const candidates = [
+      preferred,
+      {
+        type: "jsPath",
+        value: locatorContext.jsPath,
+        note: "Best for reconstructing the exact selected node, including open shadow roots."
+      },
+      {
+        type: "cssSelector",
+        value: locatorContext.cssSelector,
+        note: "Unique within the selected node root."
+      },
+      {
+        type: "xpath",
+        value: locatorContext.xpath,
+        note: locatorContext.xpath ? "Browser XPath for document-rooted elements." : "Unavailable for shadow-rooted elements."
+      },
+      {
+        type: "fullXPath",
+        value: locatorContext.fullXPath,
+        note: locatorContext.fullXPath ? "Absolute browser XPath." : "Unavailable for shadow-rooted elements."
+      }
+    ].filter((candidate) => candidate.value);
+
+    return {
+      preferredLocator: preferred,
+      candidates,
+      humanSummary: summarizeForHuman(target, locatorContext),
+      caveats: getAutomationCaveats(locatorContext)
+    };
+  }
+
+  function choosePreferredLocator(target, locatorContext) {
+    const role = inferRole(target);
+    const accessibleName = getAccessibleName(target, locatorContext);
+
+    if (role && accessibleName) {
+      return {
+        type: "playwright",
+        value: `page.getByRole(${JSON.stringify(role)}, { name: ${JSON.stringify(accessibleName)} })`,
+        note: "Semantic locator candidate from role plus accessible name."
+      };
+    }
+
+    if (locatorContext.aria.ariaLabel) {
+      return {
+        type: "playwright",
+        value: `page.getByLabel(${JSON.stringify(locatorContext.aria.ariaLabel)})`,
+        note: "Semantic locator candidate from aria-label."
+      };
+    }
+
+    if (target.getAttribute("placeholder")) {
+      return {
+        type: "playwright",
+        value: `page.getByPlaceholder(${JSON.stringify(target.getAttribute("placeholder"))})`,
+        note: "Semantic locator candidate from placeholder."
+      };
+    }
+
+    if (locatorContext.text.value && locatorContext.text.value.length <= 120) {
+      return {
+        type: "playwright",
+        value: `page.getByText(${JSON.stringify(locatorContext.text.value)})`,
+        note: "Text locator candidate."
+      };
+    }
+
+    return {
+      type: "playwright",
+      value: `page.locator(${JSON.stringify(locatorContext.cssSelector)})`,
+      note: "CSS locator fallback."
+    };
+  }
+
+  function inferRole(target) {
+    const explicitRole = target.getAttribute("role");
+    if (explicitRole) {
+      return explicitRole.trim().split(/\s+/)[0];
+    }
+
+    const tagName = target.localName;
+    if (tagName === "a" && target.hasAttribute("href")) {
+      return "link";
+    }
+
+    if (tagName === "button") {
+      return "button";
+    }
+
+    if (tagName === "select") {
+      return "combobox";
+    }
+
+    if (tagName === "textarea") {
+      return "textbox";
+    }
+
+    if (tagName === "img") {
+      return "img";
+    }
+
+    if (tagName === "input") {
+      const type = (target.getAttribute("type") || "text").toLowerCase();
+      if (type === "button" || type === "submit" || type === "reset") {
+        return "button";
+      }
+      if (type === "checkbox") {
+        return "checkbox";
+      }
+      if (type === "radio") {
+        return "radio";
+      }
+      if (type === "range") {
+        return "slider";
+      }
+      return "textbox";
+    }
+
+    return "";
+  }
+
+  function getAccessibleName(target, locatorContext) {
+    return (
+      locatorContext.aria.ariaLabel ||
+      target.getAttribute("alt") ||
+      target.getAttribute("title") ||
+      target.getAttribute("name") ||
+      locatorContext.text.value ||
+      ""
+    ).slice(0, 240);
+  }
+
+  function summarizeForHuman(target, locatorContext) {
+    const pieces = [`<${target.localName || target.tagName.toLowerCase()}>`];
+    if (target.id) {
+      pieces.push(`#${target.id}`);
+    }
+    if (target.classList?.length) {
+      pieces.push(`.${Array.from(target.classList).slice(0, 3).join(".")}`);
+    }
+    if (locatorContext.text.value) {
+      pieces.push(`text="${locatorContext.text.value.slice(0, 160)}"`);
+    }
+    return pieces.join(" ");
+  }
+
+  function getAutomationCaveats(locatorContext) {
+    const caveats = [];
+    if (locatorContext.selectorPath.rootType === "shadow-root") {
+      caveats.push("Selected node is inside an open shadow root; plain document CSS and XPath may not locate it.");
+    }
+    if (!locatorContext.fullXPath) {
+      caveats.push("Full XPath is unavailable outside the document tree.");
+    }
+    return caveats;
   }
 
   function summarizeElement(target, maxTextLength) {
@@ -367,7 +591,7 @@ export function collectElementEvidence(options = {}) {
       id: target.id || "",
       classes: Array.from(target.classList || []),
       text: getElementText(target, Math.min(maxTextLength, 500)),
-      selector: buildCssSelector(target)
+      selector: buildSelectorPath(target).cssSelector
     };
   }
 
@@ -375,6 +599,7 @@ export function collectElementEvidence(options = {}) {
     const root = target.getRootNode?.();
     return {
       type: root === document ? "document" : "shadow-root",
+      shadowDepth: buildSelectorPath(target).shadowDepth,
       isConnected: target.isConnected
     };
   }

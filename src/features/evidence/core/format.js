@@ -27,6 +27,10 @@ export function formatBundlePreview(result) {
       rect: bundle.selectedElement.rect
     },
     locators: bundle.locators,
+    automation: {
+      preferredLocator: bundle.automation?.preferredLocator,
+      caveats: bundle.automation?.caveats || []
+    },
     html: bundle.selectedElement.html,
     styles: bundle.styles
       ? {
@@ -69,8 +73,9 @@ export function formatBundleAsMarkdown(result) {
     "## Selected Element",
     "",
     `Tag: ${selected.tagName.toLowerCase()}`,
+    `Preferred locator: \`${bundle.automation?.preferredLocator?.value || bundle.locators.jsPath}\``,
     `CSS selector: \`${bundle.locators.cssSelector}\``,
-    `XPath: \`${bundle.locators.xpath}\``,
+    `XPath: \`${bundle.locators.xpath || "(unavailable)"}\``,
     `JS path: \`${bundle.locators.jsPath}\``,
     "",
     "## Full Payload",

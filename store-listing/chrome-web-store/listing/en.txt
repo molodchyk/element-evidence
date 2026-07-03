@@ -1,6 +1,12 @@
-Element Evidence lets you copy the element selected in Chrome DevTools as one automation-ready DOM and locator bundle.
+Copy the element selected in Chrome DevTools as one automation-ready DOM and locator bundle.
 
 Use it when a blocker report, AI assistant, or browser automation task needs more than one selector. The bundle includes page context, selected element metadata, outerHTML, CSS selector, XPath, full XPath, JavaScript query path, optional computed styles, and nearby DOM summaries.
+
+Popular uses:
+- hand off the exact UI element that needs automation work
+- paste rich DOM context into an AI or debugging thread
+- keep CSS selector, XPath, JS path, and HTML evidence together
+- reduce repeated right-click copy operations in DevTools
 
 Features:
 - Adds an Element Evidence sidebar to the DevTools Elements panel

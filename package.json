@@ -9,7 +9,9 @@
     "test": "node --test",
     "verify:manifest": "node scripts/verify-manifest.mjs",
     "verify:imports": "node scripts/verify-imports.mjs",
-    "verify": "npm run verify:manifest && npm run verify:imports && npm test"
+    "verify:package": "node scripts/verify-package.mjs",
+    "verify": "npm run verify:manifest && npm run verify:imports && npm run verify:package && npm test",
+    "package": "node scripts/pack-extension.mjs"
   },
   "repository": {
     "type": "git",

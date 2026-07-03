@@ -39,6 +39,19 @@ if (manifest.devtools_page) {
   verifyHtmlReferences(manifest.devtools_page);
 }
 
+if (!manifest.icons || typeof manifest.icons !== "object") {
+  failures.push("manifest.json must declare icons.");
+} else {
+  for (const size of ["16", "32", "48", "128"]) {
+    if (!manifest.icons[size]) {
+      failures.push(`manifest.json is missing ${size}px icon.`);
+      continue;
+    }
+
+    verifyFile(manifest.icons[size]);
+  }
+}
+
 if (failures.length > 0) {
   console.error(failures.join("\n"));
   process.exit(1);
