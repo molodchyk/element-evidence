@@ -36,12 +36,15 @@ The first bundle version includes:
 ```bash
 npm test
 npm run verify
+npm run store:assets
 npm run package
 ```
 
 The extension has no build step for local development. Chrome loads the source files directly.
 
 `npm run package` writes the latest Chrome extension zip to `dist/` and removes older zip files from that folder.
+
+`npm run store:assets` regenerates the StorePilot-ready Chrome Web Store promo images in `store-listing/chrome-web-store/media/promo/`.
 
 See [docs/testing.md](docs/testing.md) for browser-check notes, including the current Chrome limitation around command-line extension loading.
 

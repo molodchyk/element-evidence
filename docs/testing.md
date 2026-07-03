@@ -6,6 +6,7 @@ Run:
 
 ```bash
 npm run verify
+npm run store:assets
 npm run package
 npm run smoke:sidebar
 ```
@@ -17,7 +18,12 @@ npm run smoke:sidebar
 - release policy files and stale `dist/` zips
 - Node unit tests for formatter, options, inspected-window expression generation, and the selected-element collector
 
-`npm run package` creates `dist/element-evidence-0.1.0.zip` from only the installable extension files.
+`npm run package` creates `dist/element-evidence-1.0.0.zip` from only the installable extension files.
+
+`npm run store:assets` regenerates StorePilot-ready Chrome Web Store promotional images:
+
+- `store-listing/chrome-web-store/media/promo/small-promo.png` at 440 x 280
+- `store-listing/chrome-web-store/media/promo/marquee-promo.png` at 1400 x 560
 
 `npm run smoke:sidebar` is an optional browser smoke check. It needs Playwright available to Node. If your browser runtime is not on Playwright's default path, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to a local Chromium or Chrome for Testing executable before running it.
 

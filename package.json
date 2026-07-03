@@ -1,6 +1,6 @@
 {
   "name": "element-evidence",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Chrome DevTools extension for copying a selected element as one DOM and locator evidence bundle.",
   "type": "module",
   "private": false,
@@ -11,6 +11,7 @@
     "verify:imports": "node scripts/verify-imports.mjs",
     "verify:package": "node scripts/verify-package.mjs",
     "verify": "npm run verify:manifest && npm run verify:imports && npm run verify:package && npm test",
+    "store:assets": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-store-assets.ps1",
     "package": "node scripts/pack-extension.mjs",
     "smoke:sidebar": "node scripts/smoke-sidebar-ui.mjs"
   },

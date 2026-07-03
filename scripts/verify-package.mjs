@@ -19,13 +19,47 @@ const requiredFiles = [
   "scripts/smoke-sidebar-ui.mjs",
   "store-listing/chrome-web-store/listing/en.txt",
   "store-listing/chrome-web-store/media/icon-128.png",
-  "store-listing/chrome-web-store/media/screenshots/01-sidebar.png"
+  "store-listing/chrome-web-store/media/screenshots/01-sidebar.png",
+  "store-listing/chrome-web-store/media/promo/small-promo.png",
+  "store-listing/chrome-web-store/media/promo/marquee-promo.png"
 ];
+const requiredPngDimensions = new Map([
+  ["store-listing/chrome-web-store/media/icon-128.png", [[128, 128]]],
+  [
+    "store-listing/chrome-web-store/media/screenshots/01-sidebar.png",
+    [
+      [640, 400],
+      [1280, 800]
+    ]
+  ],
+  ["store-listing/chrome-web-store/media/promo/small-promo.png", [[440, 280]]],
+  ["store-listing/chrome-web-store/media/promo/marquee-promo.png", [[1400, 560]]]
+]);
 const manifest = readJson(path.join(root, "manifest.json"));
 
 for (const relativePath of requiredFiles) {
   if (!fs.existsSync(path.join(root, relativePath))) {
     failures.push(`Missing required project file: ${relativePath}`);
+  }
+}
+
+for (const [relativePath, allowedSizes] of requiredPngDimensions) {
+  const filePath = path.join(root, relativePath);
+  if (!fs.existsSync(filePath)) {
+    continue;
+  }
+
+  const dimensions = readPngDimensions(filePath);
+  if (
+    !allowedSizes.some(
+      ([expectedWidth, expectedHeight]) =>
+        dimensions.width === expectedWidth && dimensions.height === expectedHeight
+    )
+  ) {
+    const expected = allowedSizes.map(([width, height]) => `${width}x${height}`).join(" or ");
+    failures.push(
+      `Unexpected PNG size for ${relativePath}: ${dimensions.width}x${dimensions.height}; expected ${expected}`
+    );
   }
 }
 
@@ -70,6 +104,20 @@ console.log("Package policy verified.");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function readPngDimensions(filePath) {
+  const bytes = fs.readFileSync(filePath);
+  const signature = bytes.subarray(0, 8).toString("hex");
+  if (signature !== "89504e470d0a1a0a") {
+    failures.push(`Expected PNG signature for ${relative(filePath)}`);
+    return { width: 0, height: 0 };
+  }
+
+  return {
+    width: bytes.readUInt32BE(16),
+    height: bytes.readUInt32BE(20)
+  };
 }
 
 function verifyDistDirectory() {
