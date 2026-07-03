@@ -10,9 +10,11 @@ When you use the Element Evidence sidebar, the extension can read data from the 
 - selected element attributes, text, `outerHTML`, and layout rectangle
 - generated CSS selector, XPath, full XPath, and JavaScript query path
 - optional computed styles
-- small parent and sibling summaries
+- small parent, sibling, ancestry, frame, and shadow-root summaries
 
 This data is only collected for the DevTools-selected element.
+
+Chrome Web Store privacy forms classify this as handling website content because the extension locally reads DOM content from the page you inspect. Element Evidence does not store that website content or send it anywhere.
 
 ## Storage
 

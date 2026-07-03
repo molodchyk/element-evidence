@@ -28,7 +28,7 @@ test("normalizes capture options conservatively", () => {
     }
   );
 
-  assert.equal(normalizeCaptureOptions({ styleMode: "unexpected" }).styleMode, "all");
+  assert.equal(normalizeCaptureOptions({ styleMode: "unexpected" }).styleMode, "practical");
   assert.equal(normalizeCaptureOptions({ maxOuterHTMLLength: -1 }).maxOuterHTMLLength, 100000);
 });
 
@@ -79,6 +79,29 @@ test("formats successful bundles as json, markdown, and preview", () => {
         xpath: "//*[@id='submit']",
         fullXPath: "/html[1]/body[1]/button[1]",
         jsPath: "document.querySelector(\"#submit\")"
+      },
+      chromeCopyMenu: {
+        copyElement: {
+          value: "<button id=\"submit\">Submit</button>",
+          length: 35,
+          truncated: false
+        },
+        copyOuterHTML: {
+          value: "<button id=\"submit\">Submit</button>",
+          length: 35,
+          truncated: false
+        },
+        copySelector: "#submit",
+        copyJsPath: "document.querySelector(\"#submit\")",
+        copyStyles: {
+          mode: "practical",
+          cssText: "display: block;",
+          computed: {
+            display: "block"
+          }
+        },
+        copyXPath: "//*[@id='submit']",
+        copyFullXPath: "/html[1]/body[1]/button[1]"
       },
       automation: {
         preferredLocator: {
@@ -186,6 +209,8 @@ test("collects evidence from the selected element", () => {
     assert.equal(result.ok, true);
     assert.equal(result.bundle.locators.cssSelector, "#submit");
     assert.equal(result.bundle.locators.jsPath, "document.querySelector(\"#submit\")");
+    assert.equal(result.bundle.chromeCopyMenu.copySelector, "#submit");
+    assert.equal(result.bundle.chromeCopyMenu.copyStyles.cssText, "display: inline-block;");
     assert.equal(result.bundle.automation.preferredLocator.value, "page.getByRole(\"button\", { name: \"Submit\" })");
     assert.equal(result.bundle.styles.computed.display, "inline-block");
   } finally {
@@ -251,6 +276,7 @@ test("keeps selected-node selector separate from shadow host selector", () => {
     );
     assert.equal(result.bundle.locators.xpath, "");
     assert.equal(result.bundle.locators.fullXPath, "");
+    assert.equal(result.bundle.chromeCopyMenu.copyXPath, "");
     assert.equal(result.bundle.locators.selectorPath.shadowDepth, 1);
     assert.match(result.bundle.automation.caveats.join(" "), /shadow root/);
   } finally {

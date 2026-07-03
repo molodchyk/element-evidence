@@ -1,6 +1,6 @@
 [privacy]
 single_purpose:
-Copy the Chrome DevTools-selected DOM element as one local JSON or Markdown evidence bundle containing DOM details, locators, optional computed styles, and page context.
+Copy the Chrome DevTools-selected DOM element as one local JSON or Markdown evidence bundle containing DOM details, Chrome Copy submenu equivalents, locators, optional computed styles, and page context.
 
 permission.clipboardWrite:
 Allows the DevTools sidebar to copy the generated evidence bundle to the clipboard only after the user clicks Copy bundle.

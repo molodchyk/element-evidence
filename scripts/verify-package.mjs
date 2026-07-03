@@ -16,6 +16,7 @@ const requiredFiles = [
   "docs/chrome-web-store-additional-fields.md",
   "docs/chrome-web-store-category.md",
   "docs/chrome-web-store-privacy-form.md",
+  "scripts/smoke-sidebar-ui.mjs",
   "store-listing/chrome-web-store/listing/en.txt",
   "store-listing/chrome-web-store/media/icon-128.png",
   "store-listing/chrome-web-store/media/screenshots/01-sidebar.png"
@@ -40,6 +41,7 @@ for (const filePath of walk(root)) {
   if (
     relativePath.startsWith(".git/") ||
     relativePath.startsWith("dist/") ||
+    relativePath.startsWith("scripts/") ||
     relativePath.startsWith("test/")
   ) {
     continue;

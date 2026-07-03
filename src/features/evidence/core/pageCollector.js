@@ -1,7 +1,7 @@
 export function collectElementEvidence(options = {}) {
   const normalizedOptions = {
     includeComputedStyles: options.includeComputedStyles !== false,
-    styleMode: options.styleMode === "practical" ? "practical" : "all",
+    styleMode: options.styleMode === "all" ? "all" : "practical",
     maxOuterHTMLLength: positiveInteger(options.maxOuterHTMLLength, 100000),
     maxTextLength: positiveInteger(options.maxTextLength, 4000),
     maxAttributeValueLength: positiveInteger(options.maxAttributeValueLength, 4000)
@@ -54,6 +54,12 @@ export function collectElementEvidence(options = {}) {
           width: window.innerWidth,
           height: window.innerHeight,
           devicePixelRatio: window.devicePixelRatio
+        },
+        frame: {
+          isTopFrame: window.top === window,
+          url: location.href,
+          referrer: document.referrer || "",
+          frameElement: summarizeElement(window.frameElement, normalizedOptions.maxTextLength)
         }
       },
       selectedElement: {
@@ -66,6 +72,7 @@ export function collectElementEvidence(options = {}) {
         text,
         aria,
         rect: serializeRect(element.getBoundingClientRect()),
+        position: getDomPosition(element),
         html
       },
       locators: {
@@ -75,12 +82,28 @@ export function collectElementEvidence(options = {}) {
         jsPath,
         selectorPath
       },
+      chromeCopyMenu: {
+        copyElement: html,
+        copyOuterHTML: html,
+        copySelector: cssSelector,
+        copyJsPath: jsPath,
+        copyStyles: computedStyles
+          ? {
+              mode: computedStyles.mode,
+              cssText: computedStyles.cssText,
+              computed: computedStyles.computed
+            }
+          : null,
+        copyXPath: xpath,
+        copyFullXPath: fullXPath
+      },
       automation,
       styles: computedStyles,
       context: {
         parent: summarizeElement(element.parentElement, normalizedOptions.maxTextLength),
         previousElementSibling: summarizeElement(element.previousElementSibling, normalizedOptions.maxTextLength),
         nextElementSibling: summarizeElement(element.nextElementSibling, normalizedOptions.maxTextLength),
+        ancestry: getAncestry(element, normalizedOptions.maxTextLength),
         root: summarizeRoot(element)
       }
     }
@@ -183,7 +206,11 @@ export function collectElementEvidence(options = {}) {
 
     return {
       mode,
-      computed
+      computed,
+      cssText: Object.entries(computed)
+        .filter(([, value]) => value !== "")
+        .map(([propertyName, value]) => `${propertyName}: ${value};`)
+        .join("\n")
     };
   }
 
@@ -393,6 +420,15 @@ export function collectElementEvidence(options = {}) {
     return index;
   }
 
+  function getElementSiblingIndex(target) {
+    const parent = target.parentElement;
+    if (!parent) {
+      return 1;
+    }
+
+    return Array.from(parent.children).indexOf(target) + 1;
+  }
+
   function quoteXPathString(value) {
     const stringValue = String(value);
     if (!stringValue.includes("'")) {
@@ -591,8 +627,28 @@ export function collectElementEvidence(options = {}) {
       id: target.id || "",
       classes: Array.from(target.classList || []),
       text: getElementText(target, Math.min(maxTextLength, 500)),
-      selector: buildSelectorPath(target).cssSelector
+      selector: buildSelectorPath(target).cssSelector,
+      position: getDomPosition(target)
     };
+  }
+
+  function getDomPosition(target) {
+    return {
+      childElementIndex: getElementSiblingIndex(target),
+      nthOfType: getElementIndex(target)
+    };
+  }
+
+  function getAncestry(target, maxTextLength) {
+    const ancestors = [];
+    let current = target.parentElement;
+
+    while (current && ancestors.length < 8) {
+      ancestors.push(summarizeElement(current, Math.min(maxTextLength, 300)));
+      current = current.parentElement;
+    }
+
+    return ancestors;
   }
 
   function summarizeRoot(target) {

@@ -1,6 +1,6 @@
 export const DEFAULT_CAPTURE_OPTIONS = Object.freeze({
   includeComputedStyles: true,
-  styleMode: "all",
+  styleMode: "practical",
   maxOuterHTMLLength: 100000,
   maxTextLength: 4000,
   maxAttributeValueLength: 4000
@@ -9,7 +9,7 @@ export const DEFAULT_CAPTURE_OPTIONS = Object.freeze({
 export function normalizeCaptureOptions(options = {}) {
   return {
     includeComputedStyles: options.includeComputedStyles !== false,
-    styleMode: options.styleMode === "practical" ? "practical" : "all",
+    styleMode: options.styleMode === "all" ? "all" : "practical",
     maxOuterHTMLLength: normalizePositiveInteger(
       options.maxOuterHTMLLength,
       DEFAULT_CAPTURE_OPTIONS.maxOuterHTMLLength

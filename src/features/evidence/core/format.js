@@ -27,6 +27,21 @@ export function formatBundlePreview(result) {
       rect: bundle.selectedElement.rect
     },
     locators: bundle.locators,
+    chromeCopyMenu: {
+      copyElement: summarizeTruncatedField(bundle.chromeCopyMenu?.copyElement),
+      copyOuterHTML: summarizeTruncatedField(bundle.chromeCopyMenu?.copyOuterHTML),
+      copySelector: bundle.chromeCopyMenu?.copySelector || "",
+      copyJsPath: bundle.chromeCopyMenu?.copyJsPath || "",
+      copyStyles: bundle.chromeCopyMenu?.copyStyles
+        ? {
+            mode: bundle.chromeCopyMenu.copyStyles.mode,
+            cssTextLength: bundle.chromeCopyMenu.copyStyles.cssText.length,
+            propertyCount: Object.keys(bundle.chromeCopyMenu.copyStyles.computed).length
+          }
+        : null,
+      copyXPath: bundle.chromeCopyMenu?.copyXPath || "",
+      copyFullXPath: bundle.chromeCopyMenu?.copyFullXPath || ""
+    },
     automation: {
       preferredLocator: bundle.automation?.preferredLocator,
       caveats: bundle.automation?.caveats || []
@@ -77,6 +92,7 @@ export function formatBundleAsMarkdown(result) {
     `CSS selector: \`${bundle.locators.cssSelector}\``,
     `XPath: \`${bundle.locators.xpath || "(unavailable)"}\``,
     `JS path: \`${bundle.locators.jsPath}\``,
+    `Copy-menu fields: \`${Object.keys(bundle.chromeCopyMenu || {}).join(", ")}\``,
     "",
     "## Full Payload",
     "",
@@ -84,4 +100,15 @@ export function formatBundleAsMarkdown(result) {
     JSON.stringify(result, null, 2),
     "```"
   ].join("\n");
+}
+
+function summarizeTruncatedField(field) {
+  if (!field) {
+    return null;
+  }
+
+  return {
+    length: field.length,
+    truncated: field.truncated
+  };
 }

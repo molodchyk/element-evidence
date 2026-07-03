@@ -11,6 +11,7 @@ Element Evidence is a DevTools-only utility. It adds an Elements panel sidebar n
 5. Open the **Element Evidence** sidebar.
 6. Click **Copy bundle**.
 7. Paste the clipboard content into a text editor.
+8. Confirm the payload contains `chromeCopyMenu.copySelector`, `chromeCopyMenu.copyJsPath`, and `chromeCopyMenu.copyFullXPath`.
 
 ## Permission Explanation
 

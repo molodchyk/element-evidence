@@ -17,6 +17,14 @@ Element Evidence is a small Chrome DevTools extension with one runtime surface.
 5. The sidebar formats the result as JSON or Markdown.
 6. The sidebar writes the payload to the clipboard after a user click.
 
+## Bundle Shape
+
+The bundle exposes both normalized automation context and native DevTools-copy equivalents.
+
+- `chromeCopyMenu` contains fields that match the menu items the extension replaces: `copyElement`, `copyOuterHTML`, `copySelector`, `copyJsPath`, `copyStyles`, `copyXPath`, and `copyFullXPath`.
+- `automation` contains a preferred locator, fallback locator candidates, a human-readable summary, and caveats for shadow roots or unavailable XPath.
+- `context` contains nearby DOM, ancestry, root, and frame information so a later intervention can reconstruct the user's target with redundant evidence.
+
 ## Browser API Boundary
 
 Only `src/app/devtools/index.js` and `src/app/sidebar/index.js` call Chrome extension APIs.

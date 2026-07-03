@@ -7,6 +7,7 @@ Run:
 ```bash
 npm run verify
 npm run package
+npm run smoke:sidebar
 ```
 
 `npm run verify` checks:
@@ -18,9 +19,13 @@ npm run package
 
 `npm run package` creates `dist/element-evidence-0.1.0.zip` from only the installable extension files.
 
+`npm run smoke:sidebar` is an optional browser smoke check. It needs Playwright available to Node. If your browser runtime is not on Playwright's default path, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to a local Chromium or Chrome for Testing executable before running it.
+
 ## Browser UI Smoke Check
 
-The sidebar UI was smoke-tested in Chromium by serving `src/app/sidebar/sidebar.html` through a local static server, mocking `chrome.devtools.inspectedWindow.eval`, clicking **Copy bundle**, and verifying that the copied text contained an `element-evidence/v1` payload and a Playwright locator candidate.
+The sidebar UI smoke check serves `src/app/sidebar/sidebar.html` through a local static server, mocks `chrome.devtools.inspectedWindow.eval`, clicks **Copy bundle**, and verifies that the copied text contains an `element-evidence/v1` payload, a `chromeCopyMenu` section, and a Playwright locator candidate.
+
+The smoke payload includes the `chromeCopyMenu` section that mirrors Chrome DevTools' Copy submenu fields.
 
 That same run generated:
 

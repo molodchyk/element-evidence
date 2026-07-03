@@ -1,18 +1,19 @@
 Copy the element selected in Chrome DevTools as one automation-ready DOM and locator bundle.
 
-Use it when a blocker report, AI assistant, or browser automation task needs more than one selector. The bundle includes page context, selected element metadata, outerHTML, CSS selector, XPath, full XPath, JavaScript query path, optional computed styles, and nearby DOM summaries.
+Use it when a blocker report, AI assistant, or browser automation task needs more than one selector. The bundle includes page context, selected element metadata, outerHTML, CSS selector, XPath, full XPath, JavaScript query path, optional computed styles, nearby DOM summaries, and exact fields matching Chrome DevTools' Copy submenu.
 
 Popular uses:
 - hand off the exact UI element that needs automation work
 - paste rich DOM context into an AI or debugging thread
 - keep CSS selector, XPath, JS path, and HTML evidence together
+- preserve Chrome DevTools Copy submenu fields in one payload
 - reduce repeated right-click copy operations in DevTools
 
 Features:
 - Adds an Element Evidence sidebar to the DevTools Elements panel
 - Copies one JSON or Markdown payload with a single button
 - Uses the DevTools-selected node through $0
-- Includes redundant locator data for later automation work
+- Includes redundant locator data and Playwright-style candidates for later automation work
 - Keeps all processing local in your browser
 - Uses no host permissions, background worker, analytics, storage, or network requests
 

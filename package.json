@@ -11,7 +11,8 @@
     "verify:imports": "node scripts/verify-imports.mjs",
     "verify:package": "node scripts/verify-package.mjs",
     "verify": "npm run verify:manifest && npm run verify:imports && npm run verify:package && npm test",
-    "package": "node scripts/pack-extension.mjs"
+    "package": "node scripts/pack-extension.mjs",
+    "smoke:sidebar": "node scripts/smoke-sidebar-ui.mjs"
   },
   "repository": {
     "type": "git",

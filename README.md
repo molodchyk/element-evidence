@@ -18,9 +18,10 @@ The first bundle version includes:
 - page URL, title, viewport, device pixel ratio, and user agent
 - selected element tag, id, classes, attributes, text, ARIA-ish hints, and bounding box
 - `outerHTML` with truncation metadata
-- CSS selector, XPath, full XPath, and JavaScript query path
-- optional computed styles
-- parent, previous sibling, and next sibling summaries
+- exact copy-menu equivalents under `chromeCopyMenu`: `copyElement`, `copyOuterHTML`, `copySelector`, `copyJsPath`, `copyStyles`, `copyXPath`, and `copyFullXPath`
+- CSS selector, XPath, full XPath, JavaScript query path, and Playwright-style locator candidates
+- optional computed styles, defaulting to a practical subset
+- parent, previous sibling, next sibling, ancestry, frame, and shadow-root context
 
 ## Install Locally
 
