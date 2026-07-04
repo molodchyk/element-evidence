@@ -9,7 +9,7 @@ const slug = "element-evidence";
 const distDirectory = path.join(root, "dist");
 const packageName = `${slug}-${manifest.version}.zip`;
 const packagePath = path.join(distDirectory, packageName);
-const includePaths = ["manifest.json", "assets", "src", "README.md", "PRIVACY.md", "LICENSE", "CHANGELOG.md"];
+const includePaths = ["manifest.json", "_locales", "assets", "src", "README.md", "PRIVACY.md", "LICENSE", "CHANGELOG.md"];
 
 for (const includePath of includePaths) {
   if (!fs.existsSync(path.join(root, includePath))) {

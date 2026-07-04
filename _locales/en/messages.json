@@ -1,0 +1,154 @@
+{
+  "extensionName": {
+    "message": "Element Evidence: Copy DOM & Locators",
+    "description": "Chrome Web Store and browser extension name."
+  },
+  "extensionShortName": {
+    "message": "Element Evidence",
+    "description": "Short browser extension name."
+  },
+  "extensionDescription": {
+    "message": "Copy a selected DevTools element as one JSON bundle with DOM, locators, styles, and page context.",
+    "description": "Chrome Web Store and browser extension summary."
+  },
+  "devtoolsPageTitle": {
+    "message": "Element Evidence DevTools",
+    "description": "Title for the hidden DevTools page that registers the sidebar."
+  },
+  "devtoolsSidebarTitle": {
+    "message": "Element Evidence",
+    "description": "Title shown in the Chrome DevTools Elements sidebar tab."
+  },
+  "sidebarPageTitle": {
+    "message": "Element Evidence",
+    "description": "Sidebar document title."
+  },
+  "sidebarHeading": {
+    "message": "Element Evidence",
+    "description": "Main heading in the DevTools sidebar."
+  },
+  "sidebarSubtitle": {
+    "message": "Copy the selected DevTools element as one DOM and locator bundle.",
+    "description": "Short explanation under the sidebar heading."
+  },
+  "bundleActionsAriaLabel": {
+    "message": "Bundle actions",
+    "description": "Accessible label for the toolbar containing copy and refresh actions."
+  },
+  "bundleOptionsAriaLabel": {
+    "message": "Bundle options",
+    "description": "Accessible label for the capture options group."
+  },
+  "copyBundleButton": {
+    "message": "Copy bundle",
+    "description": "Primary button that copies the evidence bundle."
+  },
+  "refreshButton": {
+    "message": "Refresh",
+    "description": "Button that refreshes the selected element evidence."
+  },
+  "formatLabel": {
+    "message": "Format",
+    "description": "Label for the output format selector."
+  },
+  "formatJsonOption": {
+    "message": "JSON",
+    "description": "JSON output format option."
+  },
+  "formatMarkdownOption": {
+    "message": "Markdown",
+    "description": "Markdown output format option."
+  },
+  "stylesLabel": {
+    "message": "Styles",
+    "description": "Label for the computed styles selector."
+  },
+  "stylesPracticalOption": {
+    "message": "Practical subset",
+    "description": "Computed styles option that captures a smaller practical subset."
+  },
+  "stylesAllOption": {
+    "message": "All computed",
+    "description": "Computed styles option that captures all computed properties."
+  },
+  "includeStylesLabel": {
+    "message": "Include computed styles",
+    "description": "Checkbox label for including computed styles in the copied evidence."
+  },
+  "selectedElementHeading": {
+    "message": "Selected element",
+    "description": "Heading for the selected element summary."
+  },
+  "selectElementPrompt": {
+    "message": "Select an element in DevTools.",
+    "description": "Placeholder shown when no selected element evidence is available."
+  },
+  "statusReady": {
+    "message": "Ready.",
+    "description": "Initial sidebar status message."
+  },
+  "statusOpenInDevTools": {
+    "message": "Open this page as a Chrome DevTools sidebar.",
+    "description": "Error shown when the sidebar page is opened outside Chrome DevTools."
+  },
+  "statusCopied": {
+    "message": "Copied element evidence bundle.",
+    "description": "Status shown after the copy button writes the bundle to the clipboard."
+  },
+  "statusReading": {
+    "message": "Reading selected element...",
+    "description": "Status shown while the sidebar reads the DevTools-selected element."
+  },
+  "statusBundleReady": {
+    "message": "Bundle ready.",
+    "description": "Status shown after evidence is successfully collected."
+  },
+  "statusNoSelectedElementFound": {
+    "message": "No selected element found.",
+    "description": "Generic error shown when evidence collection returns no selected element."
+  },
+  "statusUnknownError": {
+    "message": "unknown error",
+    "description": "Fallback text for an unknown DevTools error code."
+  },
+  "statusDevToolsEvaluationFailed": {
+    "message": "DevTools evaluation failed: $CODE$",
+    "description": "Error shown when chrome.devtools.inspectedWindow.eval fails with a DevTools error.",
+    "placeholders": {
+      "code": {
+        "content": "$1",
+        "example": "E_PROTOCOLERROR"
+      }
+    }
+  },
+  "statusPageEvaluationFailedWithDetail": {
+    "message": "Page evaluation failed: $DETAIL$",
+    "description": "Error shown when inspected page evaluation fails with a message.",
+    "placeholders": {
+      "detail": {
+        "content": "$1",
+        "example": "ReferenceError"
+      }
+    }
+  },
+  "statusPageEvaluationFailed": {
+    "message": "Page evaluation failed.",
+    "description": "Generic inspected page evaluation failure."
+  },
+  "statusClipboardWriteFailed": {
+    "message": "Clipboard write failed.",
+    "description": "Error shown if the fallback clipboard write command fails."
+  },
+  "captureErrorNoElementSelected": {
+    "message": "No DevTools element is selected.",
+    "description": "Evidence collector error shown when $0 is empty."
+  },
+  "captureErrorNotElement": {
+    "message": "The selected DevTools value is not an element node.",
+    "description": "Evidence collector error shown when $0 is not an element."
+  },
+  "bundlePreviewAriaLabel": {
+    "message": "Bundle preview",
+    "description": "Accessible label for the preview code block."
+  }
+}

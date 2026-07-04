@@ -4,6 +4,11 @@ import {
   formatBundlePreview
 } from "../../features/evidence/core/format.js";
 import { normalizeCaptureOptions } from "../../features/evidence/core/options.js";
+import {
+  applyDocumentLocale,
+  getMessage,
+  localizeDocument
+} from "../../platform/chrome/i18n.js";
 
 const elements = {
   copyBundle: document.querySelector("#copyBundle"),
@@ -22,8 +27,11 @@ let refreshTimer = 0;
 init();
 
 function init() {
+  applyDocumentLocale();
+  localizeDocument();
+
   if (!globalThis.chrome?.devtools?.inspectedWindow) {
-    setStatus("Open this page as a Chrome DevTools sidebar.", "error");
+    setStatus(t("statusOpenInDevTools", "Open this page as a Chrome DevTools sidebar."), "error");
     setControlsDisabled(true);
     return;
   }
@@ -46,12 +54,12 @@ async function copyBundle() {
 
   const text = formatBundleForClipboard(result, elements.format.value);
   await writeClipboard(text);
-  setStatus("Copied element evidence bundle.", "success");
+  setStatus(t("statusCopied", "Copied element evidence bundle."), "success");
 }
 
 async function refreshBundle() {
   setControlsDisabled(true);
-  setStatus("Reading selected element...");
+  setStatus(t("statusReading", "Reading selected element..."));
 
   try {
     const options = normalizeCaptureOptions({
@@ -65,9 +73,9 @@ async function refreshBundle() {
     renderResult(result);
 
     if (result?.ok) {
-      setStatus("Bundle ready.");
+      setStatus(t("statusBundleReady", "Bundle ready."));
     } else {
-      setStatus(result?.error?.message || "No selected element found.", "error");
+      setStatus(getCaptureErrorMessage(result), "error");
     }
 
     return result;
@@ -100,7 +108,7 @@ function renderLastResult() {
 
 function renderResult(result) {
   if (!result?.ok) {
-    elements.selectionSummary.textContent = result?.error?.message || "Select an element in DevTools.";
+    elements.selectionSummary.textContent = getCaptureErrorMessage(result);
     elements.preview.textContent = formatBundlePreview(result);
     return;
   }
@@ -127,14 +135,19 @@ function evalInInspectedWindow(expression) {
 
 function formatDevToolsException(exceptionInfo) {
   if (exceptionInfo.isError) {
-    return `DevTools evaluation failed: ${exceptionInfo.code || "unknown error"}`;
+    const code = exceptionInfo.code || t("statusUnknownError", "unknown error");
+    return t("statusDevToolsEvaluationFailed", `DevTools evaluation failed: ${code}`, [code]);
   }
 
   if (exceptionInfo.value) {
-    return `Page evaluation failed: ${exceptionInfo.value}`;
+    return t(
+      "statusPageEvaluationFailedWithDetail",
+      `Page evaluation failed: ${exceptionInfo.value}`,
+      [String(exceptionInfo.value)]
+    );
   }
 
-  return "Page evaluation failed.";
+  return t("statusPageEvaluationFailed", "Page evaluation failed.");
 }
 
 async function writeClipboard(text) {
@@ -155,7 +168,7 @@ async function writeClipboard(text) {
   textarea.remove();
 
   if (!copied) {
-    throw new Error("Clipboard write failed.");
+    throw new Error(t("statusClipboardWriteFailed", "Clipboard write failed."));
   }
 }
 
@@ -174,4 +187,22 @@ function setStatus(message, tone = "") {
   } else {
     delete elements.status.dataset.tone;
   }
+}
+
+function getCaptureErrorMessage(result) {
+  const message = result?.error?.message || "";
+
+  if (message === "No DevTools element is selected.") {
+    return t("captureErrorNoElementSelected", message);
+  }
+
+  if (message === "The selected DevTools value is not an element node.") {
+    return t("captureErrorNotElement", message);
+  }
+
+  return message || t("statusNoSelectedElementFound", "No selected element found.");
+}
+
+function t(messageName, fallback, substitutions) {
+  return getMessage(messageName, fallback, substitutions);
 }

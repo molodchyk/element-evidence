@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Element Evidence: Copy DOM & Locators",
-  "short_name": "Element Evidence",
-  "description": "Copy a selected DevTools element as one JSON bundle with DOM, locators, styles, and page context.",
+  "name": "__MSG_extensionName__",
+  "short_name": "__MSG_extensionShortName__",
+  "description": "__MSG_extensionDescription__",
   "version": "1.0.0",
+  "default_locale": "en",
   "permissions": [
     "clipboardWrite"
   ],

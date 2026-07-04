@@ -15,6 +15,7 @@ npm run smoke:sidebar
 
 - manifest shape and referenced files
 - ES module import paths
+- Chrome i18n message references and locale key parity
 - release policy files and stale `dist/` zips
 - Node unit tests for formatter, options, inspected-window expression generation, and the selected-element collector
 

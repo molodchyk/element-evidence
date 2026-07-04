@@ -18,6 +18,12 @@ for (const key of ["name", "description", "version", "devtools_page"]) {
   }
 }
 
+if (manifest.name?.startsWith("__MSG_") || manifest.description?.startsWith("__MSG_")) {
+  if (manifest.default_locale !== "en") {
+    failures.push('manifest.json must declare default_locale "en" when using localized metadata.');
+  }
+}
+
 if (!Array.isArray(manifest.permissions)) {
   failures.push("manifest permissions must be an array.");
 }

@@ -9,8 +9,9 @@
     "test": "node --test",
     "verify:manifest": "node scripts/verify-manifest.mjs",
     "verify:imports": "node scripts/verify-imports.mjs",
+    "verify:locales": "node scripts/verify-locales.mjs",
     "verify:package": "node scripts/verify-package.mjs",
-    "verify": "npm run verify:manifest && npm run verify:imports && npm run verify:package && npm test",
+    "verify": "npm run verify:manifest && npm run verify:imports && npm run verify:locales && npm run verify:package && npm test",
     "store:assets": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-store-assets.ps1",
     "package": "node scripts/pack-extension.mjs",
     "smoke:sidebar": "node scripts/smoke-sidebar-ui.mjs"

@@ -1,54 +1,54 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Element Evidence</title>
+    <title data-i18n-text="sidebarPageTitle">Element Evidence</title>
     <link rel="stylesheet" href="./sidebar.css">
     <script type="module" src="./index.js"></script>
   </head>
   <body>
     <main class="shell">
       <header class="header">
-        <h1 class="title">Element Evidence</h1>
-        <p class="subtitle">Copy the selected DevTools element as one DOM and locator bundle.</p>
+        <h1 class="title" data-i18n-text="sidebarHeading">Element Evidence</h1>
+        <p class="subtitle" data-i18n-text="sidebarSubtitle">Copy the selected DevTools element as one DOM and locator bundle.</p>
       </header>
 
-      <section class="toolbar" aria-label="Bundle actions">
-        <button id="copyBundle" class="primary-button" type="button">Copy bundle</button>
-        <button id="refreshBundle" class="secondary-button" type="button">Refresh</button>
+      <section class="toolbar" aria-label="Bundle actions" data-i18n-aria-label="bundleActionsAriaLabel">
+        <button id="copyBundle" class="primary-button" type="button" data-i18n-text="copyBundleButton">Copy bundle</button>
+        <button id="refreshBundle" class="secondary-button" type="button" data-i18n-text="refreshButton">Refresh</button>
       </section>
 
-      <section class="controls" aria-label="Bundle options">
+      <section class="controls" aria-label="Bundle options" data-i18n-aria-label="bundleOptionsAriaLabel">
         <div class="control-line">
-          <label for="format">Format</label>
+          <label for="format" data-i18n-text="formatLabel">Format</label>
           <select id="format">
-            <option value="json">JSON</option>
-            <option value="markdown">Markdown</option>
+            <option value="json" data-i18n-text="formatJsonOption">JSON</option>
+            <option value="markdown" data-i18n-text="formatMarkdownOption">Markdown</option>
           </select>
         </div>
 
         <div class="control-line">
-          <label for="styleMode">Styles</label>
+          <label for="styleMode" data-i18n-text="stylesLabel">Styles</label>
           <select id="styleMode">
-            <option value="practical">Practical subset</option>
-            <option value="all">All computed</option>
+            <option value="practical" data-i18n-text="stylesPracticalOption">Practical subset</option>
+            <option value="all" data-i18n-text="stylesAllOption">All computed</option>
           </select>
         </div>
 
         <div class="control-line checkbox-line">
           <input id="includeStyles" type="checkbox" checked>
-          <label for="includeStyles">Include computed styles</label>
+          <label for="includeStyles" data-i18n-text="includeStylesLabel">Include computed styles</label>
         </div>
       </section>
 
       <section class="summary" aria-live="polite">
-        <p class="summary-heading">Selected element</p>
-        <p id="selectionSummary" class="summary-value">Select an element in DevTools.</p>
+        <p class="summary-heading" data-i18n-text="selectedElementHeading">Selected element</p>
+        <p id="selectionSummary" class="summary-value" data-i18n-text="selectElementPrompt">Select an element in DevTools.</p>
       </section>
 
-      <div id="status" class="status" role="status">Ready.</div>
-      <pre id="preview" class="preview" aria-label="Bundle preview"></pre>
+      <div id="status" class="status" role="status" data-i18n-text="statusReady">Ready.</div>
+      <pre id="preview" class="preview" aria-label="Bundle preview" data-i18n-aria-label="bundlePreviewAriaLabel"></pre>
     </main>
   </body>
 </html>

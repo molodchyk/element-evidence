@@ -48,6 +48,10 @@ The extension has no build step for local development. Chrome loads the source f
 
 See [docs/testing.md](docs/testing.md) for browser-check notes, including the current Chrome limitation around command-line extension loading.
 
+## Localization
+
+English UI strings live in `_locales/en/messages.json`, and `manifest.json` uses Chrome i18n placeholders. See [docs/localization.md](docs/localization.md) before adding translated UI or StorePilot listing files.
+
 ## Permissions
 
 The manifest requests `clipboardWrite` so the DevTools sidebar can copy the generated bundle after the user clicks the button.

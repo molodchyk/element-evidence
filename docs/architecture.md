@@ -7,6 +7,7 @@ Element Evidence is a small Chrome DevTools extension with one runtime surface.
 - `src/app/devtools/`: the manifest `devtools_page`; registers the Elements sidebar.
 - `src/app/sidebar/`: sidebar HTML, styles, and controller logic.
 - `src/features/evidence/core/`: pure formatting and expression construction plus the self-contained page serializer.
+- `src/platform/chrome/i18n.js`: Chrome i18n access, document language, and text direction.
 
 ## Data Flow
 
@@ -27,7 +28,7 @@ The bundle exposes both normalized automation context and native DevTools-copy e
 
 ## Browser API Boundary
 
-Only `src/app/devtools/index.js` and `src/app/sidebar/index.js` call Chrome extension APIs.
+Only `src/app/devtools/index.js`, `src/app/sidebar/index.js`, and `src/platform/chrome/i18n.js` call Chrome extension APIs.
 
 The evidence serializer is self-contained because it executes inside the inspected page and cannot import extension modules there.
 
